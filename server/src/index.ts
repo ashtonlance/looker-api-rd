@@ -1,7 +1,17 @@
 import cors from "cors";
 import crypto from "crypto";
 import express, { Request, Response } from "express";
+require("dotenv").config();
+const api_key = process.env.API_KEY || "";
+const secret = process.env.SECRET || "";
 
+if (!api_key || !secret) {
+  throw new Error(
+    "API key and secret must be defined in environment variables."
+  );
+}
+
+console.log(api_key, secret, "api_key, secret");
 // Types for API responses and requests
 interface EncryptedUrlResponse {
   encrypted_url?: {
@@ -42,9 +52,6 @@ async function getEmbedUrl(
   user_id: string
 ): Promise<string | null> {
   const url = "https://mi9amhk8h1.execute-api.us-west-2.amazonaws.com/dev/data";
-  const api_key = process.env.VITE_API_KEY || ""; // Replace with environment variable
-  const secret = process.env.VITE_SECRET || ""; // Replace with environment variable
-
   const data = {
     api_key,
     user_id,
@@ -62,9 +69,9 @@ async function getEmbedUrl(
       },
       body: JSON.stringify(data),
     });
-
+    console.log(response, "response");
     const responseData = (await response.json()) as EncryptedUrlResponse;
-
+    console.log(responseData);
     if (responseData.encrypted_url) {
       const { ciphertext, iv } = responseData.encrypted_url;
       return decryptAesCbc(ciphertext, iv, secret);
