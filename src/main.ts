@@ -1,13 +1,3 @@
-// Types for API response
-interface EncryptedUrlResponse {
-  encrypted_url?: {
-    ciphertext: string;
-    iv: string;
-  };
-}
-
-// Import environment variables
-const api_key = import.meta.env.VITE_API_KEY;
 const secret = import.meta.env.VITE_SECRET;
 
 async function decryptAesCbc(
@@ -46,45 +36,6 @@ async function decryptAesCbc(
   );
 
   return textDecoder.decode(decrypted);
-}
-
-async function getEmbedUrl(
-  raw_url: string,
-  user_id: string
-): Promise<string | null> {
-  const url = "https://mi9amhk8h1.execute-api.us-west-2.amazonaws.com/dev/data";
-
-  const data = {
-    api_key,
-    user_id,
-    first_name: "test_first",
-    last_name: "test_last",
-    session_length: 30,
-    raw_url,
-  };
-
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    const responseData: EncryptedUrlResponse = await response.json();
-
-    if (responseData.encrypted_url) {
-      const { ciphertext, iv } = responseData.encrypted_url;
-      return await decryptAesCbc(ciphertext, iv, secret);
-    } else {
-      displayText("Error: No encrypted URL found in response");
-      return null;
-    }
-  } catch (error) {
-    displayText(`Error: ${error}`);
-    return null;
-  }
 }
 
 function displayText(text: string) {
@@ -139,5 +90,3 @@ function displayEmbedUrl(url: string) {
 
 // Start the process when the page loads
 document.addEventListener("DOMContentLoaded", init);
-// Export for external use if needed
-export { getEmbedUrl };

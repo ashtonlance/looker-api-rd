@@ -42,8 +42,8 @@ async function getEmbedUrl(
   user_id: string
 ): Promise<string | null> {
   const url = "https://mi9amhk8h1.execute-api.us-west-2.amazonaws.com/dev/data";
-  const api_key = "2ac063bced74b0b831ab2914a10efbd1";
-  const secret = "26fc82234b50518d801286998b182100";
+  const api_key = process.env.VITE_API_KEY || ""; // Replace with environment variable
+  const secret = process.env.VITE_SECRET || ""; // Replace with environment variable
 
   const data = {
     api_key,
