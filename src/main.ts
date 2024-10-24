@@ -6,6 +6,10 @@ interface EncryptedUrlResponse {
   };
 }
 
+// Import environment variables
+const api_key = import.meta.env.VITE_API_KEY;
+const secret = import.meta.env.VITE_SECRET;
+
 async function decryptAesCbc(
   ciphertext: string,
   iv: string,
@@ -49,8 +53,6 @@ async function getEmbedUrl(
   user_id: string
 ): Promise<string | null> {
   const url = "https://mi9amhk8h1.execute-api.us-west-2.amazonaws.com/dev/data";
-  const api_key = "2ac063bced74b0b831ab2914a10efbd1";
-  const secret = "26fc82234b50518d801286998b182100";
 
   const data = {
     api_key,
@@ -96,7 +98,7 @@ function displayText(text: string) {
 async function init() {
   const raw_url =
     "https://analyticsodyssey.cloud.looker.com/dashboards/1344?Date+Date=30+day";
-  const user_id = "user123";
+  const user_id = "1159";
 
   try {
     const response = await fetch("http://localhost:3000/get-embed-url", {
@@ -108,7 +110,6 @@ async function init() {
     });
 
     const responseData = await response.json();
-    const secret = "26fc82234b50518d801286998b182100";
     console.log(responseData, "responseData");
     displayEmbedUrl(responseData.embedUrl);
     if (responseData) {
